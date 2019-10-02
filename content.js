@@ -92,7 +92,7 @@ characterTranslator['y'] = [characterTranslator['d'][0] | 0b100100];
 characterTranslator['z'] = [characterTranslator['e'][0] | 0b100100];
 
 // w is not part of the original braille (due to not being a french letter)
-characterTranslator['w'] =[0b111010];
+characterTranslator['w'] = [0b111010];
 
 
 
