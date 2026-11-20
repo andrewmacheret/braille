@@ -36,4 +36,6 @@ git tag v2.0
 git push origin v2.0
 ```
 
-GitHub Actions builds `braille.zip` and attaches it to a GitHub release. Upload that zip to the Chrome Web Store.
+GitHub Actions builds `braille.zip`, signs it into `braille.crx`, and attaches both to a GitHub release. Upload `braille.crx` to the Chrome Web Store.
+
+The store has "Verified CRX uploads" turned on, so it only accepts a `.crx` signed with the private key in the `CRX_PRIVATE_KEY` repo secret. To sign by hand, run `python3 scripts/sign-crx.py dist/braille.zip key.pem dist/braille.crx`.

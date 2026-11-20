@@ -48,7 +48,17 @@ jobs:
         with:
           name: braille
 
+      # the store only accepts uploads signed with this key (Verified CRX uploads)
+      - name: Sign
+        run: |
+          umask 077
+          printf '%s\n' "$CRX_PRIVATE_KEY" > "$RUNNER_TEMP/key.pem"
+          python3 scripts/sign-crx.py braille.zip "$RUNNER_TEMP/key.pem" braille.crx
+          rm "$RUNNER_TEMP/key.pem"
+        env:
+          CRX_PRIVATE_KEY: ${{ secrets.CRX_PRIVATE_KEY }}
+
       - name: Create release
-        run: gh release create "$GITHUB_REF_NAME" braille.zip --title "$GITHUB_REF_NAME" --generate-notes
+        run: gh release create "$GITHUB_REF_NAME" braille.crx braille.zip --title "$GITHUB_REF_NAME" --generate-notes
         env:
           GH_TOKEN: ${{ github.token }}
