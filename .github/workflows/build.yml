@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     container: emscripten/emsdk:4.0.10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Build liblouis
         run: scripts/build-liblouis.sh
@@ -22,7 +22,7 @@ jobs:
       - name: Package
         run: scripts/package.sh
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: braille
           path: dist/braille.zip
@@ -34,7 +34,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Check the tag matches the manifest version
         run: |
@@ -44,7 +44,7 @@ jobs:
             exit 1
           fi
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: braille
 
