@@ -180,30 +180,28 @@ var toBraille = function(text) {
   }).join('');
 };
 
-var translateAll = function() {
+// skip tags whose text isn't visible page text, like scripts and styles
+var skipTags = {SCRIPT: true, STYLE: true, NOSCRIPT: true, TEXTAREA: true};
 
-  $('body')
-    .find('*')
-    .contents()
-    .filter(function() {
-      // text nodes without whitespace
-      return this.nodeType === Node.TEXT_NODE && this.textContent.trim().length > 0;
-    })
-    .each(function(i, textNode) {
-      textNode.textContent = toBraille(textNode.textContent);
-    });
+var translateAll = function() {
+  var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+    acceptNode: function(node) {
+      if (node.textContent.trim().length === 0) return NodeFilter.FILTER_REJECT;
+      if (node.parentElement && skipTags[node.parentElement.tagName]) return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+
+  var textNodes = [];
+  while (walker.nextNode()) textNodes.push(walker.currentNode);
+  textNodes.forEach(function(textNode) {
+    textNode.textContent = toBraille(textNode.textContent);
+  });
 };
 
-
 var loadBrailleTranslationMode = function(callback) {
-  chrome.runtime.sendMessage({
-    method: "getLocalStorage",
-    keys: ["brailleTranslationMode"]
-  },
-  function(response) {
-    var brailleTranslationMode = response.data.brailleTranslationMode;
-    console.log('brailleTranslationMode: ' + brailleTranslationMode);
-    callback(brailleTranslationMode);
+  chrome.storage.local.get('brailleTranslationMode', function(stored) {
+    callback(stored.brailleTranslationMode);
   });
 };
 
@@ -214,28 +212,13 @@ loadBrailleTranslationMode(function(newBrailleTranslationMode) {
   }
 });
 
-
-document.addEventListener('visibilitychange', function(){
+document.addEventListener('visibilitychange', function() {
   if (!document.hidden) {
-    // tab was just focused, get the braille translation mode and see if it changed
+    // tab was just focused, see if the mode changed while it was hidden
     loadBrailleTranslationMode(function(newBrailleTranslationMode) {
       if (brailleTranslationMode != newBrailleTranslationMode) {
-        // it changed... reload the page
         window.location.reload();
       }
     });
   }
 });
-
-/*
-chrome.runtime.onMessage.addListener(
-  function(request, sender, sendResponse) {
-    if( request.message === "clicked_browser_action" ) {
-      modeIndex = ((modeIndex + 1) % modes.length);
-      mode = modes[modeIndex];
-    }
-  }
-);
-*/
-
-
