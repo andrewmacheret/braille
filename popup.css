@@ -1,0 +1,41 @@
+:root {
+  color-scheme: light dark;
+}
+
+body {
+  width: 240px;
+  margin: 12px;
+  font: 13px system-ui, sans-serif;
+}
+
+h1 {
+  margin: 0 0 12px;
+  font-size: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 4px;
+}
+
+select {
+  width: 100%;
+  margin-bottom: 12px;
+  font: inherit;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.credit {
+  margin: 12px 0 0;
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.credit a {
+  color: inherit;
+}

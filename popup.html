@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <h1>Braille Translator</h1>
+
+  <label for="grade">Braille</label>
+  <select id="grade">
+    <option value="off">Off</option>
+    <optgroup label="Unified English Braille">
+      <option value="ueb-g1">UEB Grade 1 (uncontracted)</option>
+      <option value="ueb-g2">UEB Grade 2 (contracted)</option>
+    </optgroup>
+    <optgroup label="English Braille American Edition">
+      <option value="ebae-g1">EBAE Grade 1 (uncontracted)</option>
+      <option value="ebae-g2">EBAE Grade 2 (contracted)</option>
+    </optgroup>
+    <optgroup label="Unofficial">
+      <option value="g3">Grade 3 (shorthand)</option>
+    </optgroup>
+  </select>
+
+  <label class="checkbox">
+    <input type="checkbox" id="showOriginal">
+    Show original text
+  </label>
+
+  <p class="credit">Translation by <a href="https://liblouis.io/" target="_blank">liblouis</a></p>
+
+  <script src="popup.js"></script>
+</body>
+</html>

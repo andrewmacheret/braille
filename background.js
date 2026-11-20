@@ -1,16 +1,29 @@
-"use strict";
+import { translate } from './louis.js';
 
-var brailleTranslationModes = ['translate', 'translateWithOriginal', 'disabled'];
+// grade setting -> liblouis table
+var tables = {
+  'ueb-g1': 'en-ueb-g1.ctb',
+  'ueb-g2': 'en-ueb-g2.ctb',
+  'ebae-g1': 'en-us-g1.ctb',
+  'ebae-g2': 'en-us-g2.ctb',
+  'g3': 'en-g3.ctb'
+};
 
-chrome.action.onClicked.addListener(async function(tab) {
-  // rotate the translation mode
-  var stored = await chrome.storage.local.get('brailleTranslationMode');
-  var currentModeIndex = brailleTranslationModes.indexOf(stored.brailleTranslationMode);
-  if (currentModeIndex < 0) currentModeIndex = 0;
-  var newMode = brailleTranslationModes[(currentModeIndex + 1) % brailleTranslationModes.length];
-  await chrome.storage.local.set({brailleTranslationMode: newMode});
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+  if (message.method !== 'translate') return false;
 
-  if (tab && tab.id !== undefined) {
-    chrome.tabs.reload(tab.id);
+  var table = tables[message.grade];
+  if (!table) {
+    sendResponse({error: 'unknown grade ' + message.grade});
+    return false;
   }
+
+  translate(table, message.texts, message.showOriginal).then(
+    function(texts) { sendResponse({texts: texts}); },
+    function(error) {
+      console.error(error);
+      sendResponse({error: String(error)});
+    });
+  // keep the channel open for the async response
+  return true;
 });
